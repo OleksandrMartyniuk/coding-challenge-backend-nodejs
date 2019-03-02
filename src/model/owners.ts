@@ -1,16 +1,22 @@
-import { Model, Column, Table, PrimaryKey, AutoIncrement, DataType, HasMany } from "sequelize-typescript";
+import { Model, Column, Table, HasMany, ForeignKey, BelongsTo, PrimaryKey, DataType } from "sequelize-typescript";
 import Bike from './bikes';
+import User from './user';
 
 @Table
 export default class Owner extends Model<Owner> {
 
-    @AutoIncrement
     @PrimaryKey
     @Column(DataType.INTEGER)
     public id!: number;
 
-    @Column(DataType.STRING)
-    public email!: string;
+    @Column
+    public name!: string;
+
+    @BelongsTo(() => User)
+    public user!: User;
+
+    @ForeignKey(() => User)
+    public userId!: number;
 
     @HasMany(() => Bike)
     public bikes!: Bike[];

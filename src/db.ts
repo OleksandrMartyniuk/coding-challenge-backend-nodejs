@@ -6,7 +6,7 @@ export async function initDatabaseConnection(sync = false) {
         dialect: 'mysql',
         port: config.db.port,
         database: config.db.database,
-        username: config.db.username, 
+        username: config.db.username,
         password: config.db.password,
         logging: false,
         operatorsAliases: false,
@@ -16,7 +16,7 @@ export async function initDatabaseConnection(sync = false) {
     await sequelize.authenticate();
     console.log(`Connected to ${config.db.database}`)
     if (sync) {
-        await sequelize.sync();
+        await sequelize.sync({ force: true });
         console.log('Sync complete')
     }
     return sequelize;

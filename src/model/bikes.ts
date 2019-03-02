@@ -1,11 +1,14 @@
-import { Table, Model, Column, PrimaryKey, AutoIncrement, DataType, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Table, Model, Column, DataType, BelongsTo, ForeignKey, PrimaryKey } from "sequelize-typescript";
 import Owner from "./owners";
 import Department from "./departments";
 import Officer from "./officer";
 
-
 @Table
 export default class Bike extends Model<Bike> {
+
+    @PrimaryKey
+    @Column(DataType.INTEGER)
+    public id!: number;
 
     @Column(DataType.STRING)
     public licenseNumber!: string;

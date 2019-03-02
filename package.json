@@ -29,6 +29,7 @@
     "@types/jsonwebtoken": "^8.3.0",
     "@types/node": "^11.9.6",
     "@types/sequelize": "^4.27.38",
+    "@types/es6-promise": "^3.3.0",
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
     "mocha": "^6.0.2",

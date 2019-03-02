@@ -1,12 +1,15 @@
-import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
+import { Table, Model, Column, HasMany, PrimaryKey, DataType } from 'sequelize-typescript';
 import Officer from './officer';
 import Bike from './bikes';
 
-
 @Table
 export default class Department extends Model<Department> {
+
+    @PrimaryKey
+    @Column(DataType.INTEGER)
+    public id!: number;
     
-    @Column(DataType.STRING)
+    @Column
     public name!: string;
 
     @HasMany(() => Officer)

@@ -4,6 +4,10 @@ export interface Config {
     db: DbConfig,
     api: {
         port: number
+    },
+    security: {
+        jwtSecret: string,
+        saltRounds: number
     }
 }
 
