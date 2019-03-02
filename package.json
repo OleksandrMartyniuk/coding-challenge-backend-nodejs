@@ -1,0 +1,43 @@
+{
+  "name": "bike-finder",
+  "version": "1.0.0",
+  "description": "thief's got burning hat",
+  "main": "server.js",
+  "scripts": {
+    "tsc": "tsc",
+    "start": "rm -rf ./dist && tsc && node ./dist/index.js",
+    "test": "rm -rf ./dist && tsc && mocha --exit",
+    "mocha": "mocha --exit",
+    "dev": "ts-node-dev --respawn --transpileOnly ./src/index.ts"
+  },
+  "author": "Alex",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.4",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.0",
+    "module-alias": "^2.2.0",
+    "mysql2": "^1.6.5",
+    "sequelize": "^4.42.1",
+    "sequelize-typescript": "^0.6.7"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/body-parser": "^1.17.0",
+    "@types/express": "^4.16.1",
+    "@types/jsonwebtoken": "^8.3.0",
+    "@types/node": "^11.9.6",
+    "@types/sequelize": "^4.27.38",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "mocha": "^6.0.2",
+    "reflect-metadata": "^0.1.13",
+    "ts-node-dev": "^1.0.0-pre.32",
+    "typescript": "^3.3.3333"
+  },
+  "_moduleAliases": {
+    "@model": "dist/model",
+    "@config": "dist/config"
+  }
+}
