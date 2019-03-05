@@ -1,9 +1,8 @@
-import 'module-alias/register';
 import express from 'express';
 import { initDatabaseConnection } from './db';
-import { config } from '@config';
+import { config } from './config';
 import { Server } from 'http';
-import registerAuthRoutes from './routes/auth';
+import registerRoutes from './routes/index';
 import bodyParser = require('body-parser');
 
 export const app = express();
@@ -11,10 +10,15 @@ const port = config.api.port;
 
 app.use(bodyParser.json());
 
-registerAuthRoutes(app);
+registerRoutes(app);
 
-app.get('*', (req,res,next) => {
-    next({ status: 404, message: 'Not found'})
+app.all('*', (req, res, next) => {
+    next({ status: 404, message: 'Not found' })
+});
+
+app.use((err: any, req: any, res: any, next: any) => {
+    res.status(err.status || 500)
+        .json({ message: err.message || 'something went wrong' });
 });
 
 const server: Server = app.listen(port, () => {
@@ -22,7 +26,7 @@ const server: Server = app.listen(port, () => {
 });
 
 export const start = (async () => {
-    await initDatabaseConnection(false);
+    return await initDatabaseConnection(true);
 })();
 
 export const stop = () => {

@@ -10,9 +10,5 @@ export const devConfig: Config = {
     },
     api: {
         port: 4001
-    },
-    security: {
-        jwtSecret: 'my-secret-key',
-        saltRounds: 8
     }
 }

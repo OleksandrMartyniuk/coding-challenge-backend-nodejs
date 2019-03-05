@@ -1,20 +1,22 @@
-import { Table, Model, Column, HasMany, PrimaryKey, DataType } from 'sequelize-typescript';
+import { Table, Model, Column, HasMany, PrimaryKey, AutoIncrement, Scopes } from 'sequelize-typescript';
 import Officer from './officer';
-import Bike from './bikes';
 
+@Scopes({
+    withOfficers: {
+        include: [() => Officer]
+    }
+})
 @Table
 export default class Department extends Model<Department> {
 
+    @AutoIncrement
     @PrimaryKey
-    @Column(DataType.INTEGER)
+    @Column
     public id!: number;
-    
+
     @Column
     public name!: string;
 
     @HasMany(() => Officer)
     public officers!: Officer[];
-
-    @HasMany(() => Bike)
-    public bikes!: Bike[];
 }

@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
-import { config } from '@config';
+import { config } from './config';
 
 export async function initDatabaseConnection(sync = false) {
     const sequelize = new Sequelize({
