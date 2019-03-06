@@ -1,7 +1,8 @@
-import { Table, Model, Column, DataType, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement, NotNull, Scopes, AfterCreate, BeforeCreate, BeforeUpdate, BeforeSave, Default } from 'sequelize-typescript';
+import { Table, Model, Column, DataType, BelongsTo, ForeignKey, PrimaryKey, AutoIncrement, NotNull, Scopes, AfterCreate, BeforeCreate, BeforeUpdate, BeforeSave, Default, HasOne } from 'sequelize-typescript';
 import Owner from './owners';
 import Officer from './officer';
 import Department from './departments';
+import sequelize from 'sequelize';
 
 @Scopes({
     new: {
@@ -10,7 +11,10 @@ import Department from './departments';
     withOfficers: {
         include: [{
             model: () => Officer,
-            include: [() => Department],
+            include: [{
+                model: () => Department,
+                required: false
+            }],
             required: false
         }]
     }
@@ -60,14 +64,19 @@ export default class Bike extends Model<Bike> {
     @ForeignKey(() => Officer)
     public officerId?: number;
 
+    public assignToOfficer(officer: Officer) {
+        const now = new Date();
+        this.officerId = officer.id;
+        this.status = 'IN PROGRESS';
+        this.statusUpdatedOn = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        return this;
+    }
+
     @BeforeCreate
     public static async assignToFreeOfficer(bike: Bike, options: any) {
         const officer = await Officer.useScope('free').findOne();
-        const now = new Date();
         if (officer) {
-            bike.officerId = officer.id;
-            bike.status = 'IN PROGRESS';
-            bike.statusUpdatedOn = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            bike.assignToOfficer(officer);
         }
     }
 
@@ -89,6 +98,60 @@ export default class Bike extends Model<Bike> {
     public static useScope(scope: 'new' | 'withOfficers') {
         return Bike.scope(scope);
     }
+
+    public static async search(request: any) {
+        let result;
+        if (request) {
+            const query = new BikesSearchQueryBuilder(request)
+                .addDepartmentIdSection()
+                .addPropsSection()
+                .query
+            result = await Bike.useScope('withOfficers').findAll(query);
+        } else {
+            result = await Bike.useScope('withOfficers').findAll();
+        }
+        return result;
+    }
 }
 
 export type ReportStatus = 'NEW' | 'IN PROGRESS' | 'RESOLVED';
+
+export class BikesSearchQueryBuilder {
+    constructor(
+        private request: any,
+        public searchByProperties = [
+            'licenseNumber',
+            'color',
+            'type',
+            'fullName',
+            'theftDescription'
+        ]) { }
+
+    public query: any = { where: {} };
+
+    public addDepartmentIdSection() {
+        if (this.request.departmentId) {
+            this.query.include = [{
+                model: Officer,
+                include: [{
+                    model: Department,
+                    where: {
+                        id: this.request.departmentId
+                    },
+                    required: true
+                }],
+                required: true
+            }]
+        }
+        return this;
+    }
+
+    public addPropsSection() {
+        for (const prop of this.searchByProperties || []) {
+            if (this.request[prop]) {
+                this.query.where[prop] = { [sequelize.Op.like]: '%' + this.request[prop] + '%' }
+            }
+        }
+        return this;
+    }
+}

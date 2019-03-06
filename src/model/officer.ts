@@ -1,4 +1,4 @@
-import { Table, Model, Column, BelongsTo, HasOne, ForeignKey, PrimaryKey, Unique, AutoIncrement, DataType, NotNull, Scopes, BeforeCreate, AllowNull, DefaultScope } from 'sequelize-typescript';
+import { Table, Model, Column, BelongsTo, HasOne, ForeignKey, PrimaryKey, Unique, AutoIncrement, DataType, NotNull, Scopes, BeforeCreate, AllowNull, DefaultScope, BeforeUpdate } from 'sequelize-typescript';
 import Bike from './bikes';
 import Department from './departments';
 
@@ -30,20 +30,27 @@ export default class Officer extends Model<Officer> {
     @Column
     public departmentId!: number;
 
-    @HasOne(() => Bike)
+    @BelongsTo(() => Bike, { constraints: false })
     public currentCase?: Bike;
 
     @ForeignKey(() => Bike)
-    @Column
     public currentCaseId: number;
 
     @Column(DataType.DATEONLY)
     public lastCaseResolvedOn: Date
 
+    @BeforeUpdate
     @BeforeCreate
     public static async findUnassignedCase(officer: Officer, options: any) {
-        const bike = await Bike.findUnassignedCase();
-        officer.currentCaseId = bike ? bike.id : null;
+        if (!officer.currentCaseId) {
+            const bike = await Bike.findUnassignedCase();
+            if (!bike) {
+                return;
+            }
+            officer.currentCaseId = bike.id;
+            officer.currentCase = bike;
+            await bike.assignToOfficer(officer).save({ transaction: options.transaction });
+        }
     }
 
     public static async createOfficersForDepartment(departmentId: number, models: Partial<Officer>[]) {
@@ -81,7 +88,7 @@ export default class Officer extends Model<Officer> {
 
         return this.sequelize.transaction({}, async (t) => {
             await currentCase.update(bikeUpdates, { transaction: t });
-            return this.update(officerUpdates, { transaction: t });
+            return await this.update(officerUpdates, { transaction: t });
         });
     }
 }
