@@ -20,14 +20,12 @@ export default class Officer extends Model<Officer> {
     public id!: number;
 
     @Unique
-    @NotNull
     @Column
     public email!: string;
 
     @BelongsTo(() => Department)
     public department!: Department;
 
-    @NotNull
     @ForeignKey(() => Department)
     @Column
     public departmentId!: number;
