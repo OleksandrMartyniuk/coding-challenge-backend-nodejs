@@ -8,7 +8,7 @@ chai.use(chaiHttp)
 
 let db: any;
 
-describe.only('Admin', () => {
+describe('Admin', () => {
     before(async () => {
         db = await start;
     });

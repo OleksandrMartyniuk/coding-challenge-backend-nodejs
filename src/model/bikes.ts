@@ -23,23 +23,18 @@ export default class Bike extends Model<Bike> {
     @Column
     public id!: number;
 
-    @NotNull
     @Column(DataType.STRING)
     public licenseNumber!: string;
 
-    @NotNull
     @Column(DataType.STRING)
     public color!: string;
 
-    @NotNull
     @Column(DataType.STRING)
     public type!: string;
 
-    @NotNull
     @Column(DataType.STRING)
     public fullName!: string;
 
-    @NotNull
     @Column(DataType.DATEONLY)
     public date!: Date;
 
@@ -68,10 +63,18 @@ export default class Bike extends Model<Bike> {
     @BeforeCreate
     public static async assignToFreeOfficer(bike: Bike, options: any) {
         const officer = await Officer.useScope('free').findOne();
+        const now = new Date();
         if (officer) {
-            bike.officer = officer;
+            bike.officerId = officer.id;
             bike.status = 'IN PROGRESS';
-            bike.statusUpdatedOn = new Date();
+            bike.statusUpdatedOn = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        }
+    }
+
+    @AfterCreate
+    public static async setOfficersCurrentCase(bike: Bike, options: any) {
+        if (bike.officerId) {
+            await Officer.update({ currentCaseId: bike.id }, { where: { id: bike.officerId } });
         }
     }
 

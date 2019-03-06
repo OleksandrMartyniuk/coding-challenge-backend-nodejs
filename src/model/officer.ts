@@ -1,11 +1,11 @@
-import { Table, Model, Column, BelongsTo, HasOne, ForeignKey, PrimaryKey, Unique, AutoIncrement, DataType, NotNull, Scopes, BeforeCreate } from 'sequelize-typescript';
+import { Table, Model, Column, BelongsTo, HasOne, ForeignKey, PrimaryKey, Unique, AutoIncrement, DataType, NotNull, Scopes, BeforeCreate, AllowNull, DefaultScope } from 'sequelize-typescript';
 import Bike from './bikes';
 import Department from './departments';
 
 @Scopes({
     free: {
         where: { currentCaseId: null },
-        order: ['lastCaseResolvedOn', 'ASC']
+        order: [['lastCaseResolvedOn', 'ASC']]
     },
     withCase: {
         include: [() => Bike]
@@ -43,7 +43,7 @@ export default class Officer extends Model<Officer> {
     @BeforeCreate
     public static async findUnassignedCase(officer: Officer, options: any) {
         const bike = await Bike.findUnassignedCase();
-        officer.currentCase = bike;
+        officer.currentCaseId = bike ? bike.id : null;
     }
 
     public static async createOfficersForDepartment(departmentId: number, models: Partial<Officer>[]) {
