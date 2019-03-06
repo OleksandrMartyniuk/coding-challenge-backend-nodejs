@@ -4,7 +4,8 @@ export interface Config {
     db: DbConfig,
     api: {
         port: number
-    }
+    },
+    logging: 'console'
 }
 
 export interface DbConfig {

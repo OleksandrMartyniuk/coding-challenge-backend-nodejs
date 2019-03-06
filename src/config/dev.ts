@@ -10,5 +10,6 @@ export const devConfig: Config = {
     },
     api: {
         port: 4001
-    }
+    },
+    logging: 'console'
 }
