@@ -5,10 +5,9 @@
   "main": "server.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "rm -rf ./dist && tsc && node ./dist/index.js",
-    "test": "rm -rf ./dist && tsc && mocha --exit",
-    "mocha": "mocha -r ts-node/register src/**/*.spec.ts --exit",
-    "mocha:coverage": "nyc mocha -r ts-node/register src/**/*.spec.ts --exit",
+    "start": "rm -rf ./dist && tsc && nodemon ./dist/index.js",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts --exit",
+    "test:coverage": "nyc mocha -r ts-node/register src/**/*.spec.ts --exit",
     "dev": "ts-node-dev --respawn --transpileOnly ./src/index.ts"
   },
   "author": "Alex",
@@ -34,6 +33,7 @@
     "chai": "^4.2.0",
     "chai-http": "4.2.0",
     "mocha": "^6.0.2",
+    "nodemon": "^1.18.10",
     "nyc": "^13.3.0",
     "reflect-metadata": "^0.1.13",
     "ts-node-dev": "^1.0.0-pre.32",
