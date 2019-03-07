@@ -1,14 +1,13 @@
 import express from 'express';
 import { initDatabaseConnection } from './db';
-import { config } from './config';
 import { Server } from 'http';
 import registerRoutes from './routes/index';
 import logger from './logging/index';
-import { useConfig } from './config/index';
 import bodyParser = require('body-parser');
+import dotenv from 'dotenv';
 
 export const app = express();
-const port = config.api.port;
+const port = process.env['PORT'] || 8080;
 
 app.use(bodyParser.json());
 
@@ -29,12 +28,8 @@ const server: Server = app.listen(port, () => {
 });
 
 export const start = (async () => {
+    dotenv.config();
     const sync = process.env['DB_SYNC'];
-    const ENV = process.env['ENV'];
-
-    if (ENV) {
-        useConfig(ENV);
-    }
 
     return await initDatabaseConnection(!!sync);
 })();

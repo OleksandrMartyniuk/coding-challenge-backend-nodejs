@@ -20,9 +20,12 @@ services:
     depends_on: 
       - mysql
     environment:
-      ENV: 'test'
-      DB_SYNC: 'true'
-    command: npm run mocha:coverage
+      DB_USER: 'test_user'
+      DB_PASSWORD: 'test'
+      DB_PORT: '3306'
+      DB_HOST: 'mysql'
+      DB_DATABASE: 'bikes_test'
+    command: npm run test:coverage
     ports:
       - '4001'
     volumes:

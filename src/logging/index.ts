@@ -1,8 +1,6 @@
-import { config } from '../config';
-
 let logger: Logger;
 
-switch (config.logging) {
+switch (process.env['LOGGER']) {
     default:
         logger = console;
         break;
