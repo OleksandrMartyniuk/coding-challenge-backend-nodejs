@@ -32,7 +32,7 @@
     "@types/node": "^11.9.6",
     "@types/sequelize": "^4.27.38",
     "chai": "^4.2.0",
-    "chai-http": "^4.2.1",
+    "chai-http": "4.2.0",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0",
     "reflect-metadata": "^0.1.13",
