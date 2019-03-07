@@ -1,6 +1,8 @@
 import { devConfig } from './dev';
+import { testConfig } from './test';
 
 export interface Config {
+    production?: boolean,
     db: DbConfig,
     api: {
         port: number
@@ -20,10 +22,10 @@ const defaultConfig: Config = devConfig;
 
 export let config: Config = defaultConfig;
 
-export const useConfig = (env: 'dev' = 'dev') => {
+export const useConfig = (env: string) => {
     switch (env) {
-        case 'dev':
-            config = defaultConfig;
+        case 'test':
+            config = testConfig;
             break;
         default:
             config = defaultConfig;

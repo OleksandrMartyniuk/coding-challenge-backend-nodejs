@@ -4,6 +4,7 @@ import { config } from './config';
 import { Server } from 'http';
 import registerRoutes from './routes/index';
 import logger from './logging/index';
+import { useConfig } from './config/index';
 import bodyParser = require('body-parser');
 
 export const app = express();
@@ -28,7 +29,14 @@ const server: Server = app.listen(port, () => {
 });
 
 export const start = (async () => {
-    return await initDatabaseConnection(true);
+    const sync = process.env['DB_SYNC'];
+    const ENV = process.env['ENV'];
+
+    if (ENV) {
+        useConfig(ENV);
+    }
+
+    return await initDatabaseConnection(!!sync);
 })();
 
 export const stop = () => {
