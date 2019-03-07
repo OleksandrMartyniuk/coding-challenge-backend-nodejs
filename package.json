@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "rm -rf ./dist && tsc && nodemon ./dist/index.js",
-    "start:local": "rm -rf ./dist && tsc && node -r dotenv/config ./dist/index.js dotenv_config_path=.env.local",
+    "start": "rm -rf ./dist && tsc && node ./dist/index.js",
     "test": "mocha -r ts-node/register src/**/*.spec.ts --exit",
     "test:coverage": "nyc mocha -r ts-node/register src/**/*.spec.ts --exit",
     "dev": "ts-node-dev --respawn --transpileOnly ./src/index.ts"
