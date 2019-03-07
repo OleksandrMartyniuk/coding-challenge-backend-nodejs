@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { config } from './config';
+import logger from './logging';
 
 export async function initDatabaseConnection(sync = false) {
     const sequelize = new Sequelize({
@@ -8,16 +9,17 @@ export async function initDatabaseConnection(sync = false) {
         database: config.db.database,
         username: config.db.username,
         password: config.db.password,
+        host: config.db.host,
         logging: false,
         operatorsAliases: false,
         modelPaths: [__dirname + '/model']
     });
 
     await sequelize.authenticate();
-    console.log(`Connected to ${config.db.database}`)
-    if (sync) {
+    logger.log(`Connected to ${config.db.database}`)
+    if (sync && !config.production) {
         await sequelize.sync({ force: true });
-        console.log('Sync complete')
+        logger.log('Sync complete')
     }
     return sequelize;
 }
