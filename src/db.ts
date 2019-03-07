@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import logger from './logging';
 
-export async function initDatabaseConnection(sync = false) {
+export async function initDatabaseConnection() {
     const sequelize = new Sequelize({
         dialect: 'mysql',
         port: parseInt(process.env['DB_PORT']) || 3306,
@@ -16,9 +16,7 @@ export async function initDatabaseConnection(sync = false) {
 
     await sequelize.authenticate();
     logger.log(`Connected to ${process.env['DB_DATABASE']}`)
-    if (sync && process.env['ENV'] !== 'production') {
-        await sequelize.sync();
-        logger.log('Sync complete')
-    }
+    await sequelize.sync({ force: process.env['FORCE_SYNC'] === 'true' });
+    logger.log('Sync complete')
     return sequelize;
 }

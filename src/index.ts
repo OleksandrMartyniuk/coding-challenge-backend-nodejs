@@ -29,9 +29,8 @@ const server: Server = app.listen(port, () => {
 
 export const start = (async () => {
     dotenv.config();
-    const sync = process.env['DB_SYNC'];
 
-    return await initDatabaseConnection(!!sync);
+    return await initDatabaseConnection();
 })();
 
 export const stop = () => {
